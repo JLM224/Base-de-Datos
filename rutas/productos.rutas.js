@@ -20,7 +20,7 @@ router.post("/", auth("admin"), multerMiddleware.single("imagen"), crearNuevoPro
 
 router.put("/:id", auth("admin"), multerMiddleware.single("imagen"), actualizarProductoPorId)
 
-router.patch("/cambiarEstado/:idProducto", auth("admin"), cambiarEstadoProducto)
+router.put("/cambiarEstado/:idProducto", auth("admin"), cambiarEstadoProducto)
 
 router.delete("/:id", auth("admin"), eliminarProductoPorId)
 
