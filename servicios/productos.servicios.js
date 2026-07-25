@@ -18,6 +18,23 @@ const obtenerTodosLosProductosServicio = async () => {
   }
 }
 
+const obtenerProductosHabilitadosServicio = async () => {
+  try {
+    const productos = ProductosModelo.find({habilitado: true})
+
+    return{
+      productos,
+      statusCode: 200
+    }
+  } catch (error) {
+    return{
+      msg: "Error al obtener los productos habilitados",
+      error: error.message,
+      statusCode: 500
+    }
+  }
+} 
+
 const obtenerProductoPorIdServicio = async (idProducto) => {
   try {
     const producto = await ProductosModelo.findById(idProducto)
@@ -193,6 +210,7 @@ const cambiarEstadoProductoServicio = async (idProducto) => {
 
 module.exports = {
   obtenerTodosLosProductosServicio,
+  obtenerProductosHabilitadosServicio,
   obtenerProductoPorIdServicio,
   crearNuevoProductoServicio,
   actualizarProductoPorIdServicio,

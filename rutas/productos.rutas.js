@@ -3,6 +3,7 @@ const multerMiddleware = require("../middlewares/multer.middleware")
 const auth = require("../middlewares/auth")
 const {
   obtenerTodosLosProductos,
+  obtenerProductosHabilitados,
   obtenerProductoPorId,
   crearNuevoProducto,
   actualizarProductoPorId,
@@ -13,6 +14,8 @@ const {
 const router = express.Router()
 
 router.get("/", obtenerTodosLosProductos)
+
+router.get("/", obtenerProductosHabilitados)
 
 router.get("/:id", obtenerProductoPorId)
 
