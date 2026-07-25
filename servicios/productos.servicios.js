@@ -20,7 +20,7 @@ const obtenerTodosLosProductosServicio = async () => {
 
 const obtenerProductosHabilitadosServicio = async () => {
   try {
-    const productos = ProductosModelo.find({habilitado: true})
+    const productos = await ProductosModelo.find({habilitado: true})
 
     return{
       productos,
