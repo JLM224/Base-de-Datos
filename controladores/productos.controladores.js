@@ -82,7 +82,7 @@ const eliminarProductoPorId = async (req, res) => {
 
 const cambiarEstadoProducto = async (req, res) => {
   const { msg, error, statusCode } =
-    await cambiarEstadoProductoServicio(req.params.idProducto)
+    await cambiarEstadoProductoServicio(req.params.id)
 
   res.status(statusCode).json(
     error
