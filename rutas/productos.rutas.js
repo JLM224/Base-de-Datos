@@ -15,7 +15,7 @@ const router = express.Router()
 
 router.get("/", obtenerTodosLosProductos)
 
-router.get("/", obtenerProductosHabilitados)
+router.get("/habilitados", obtenerProductosHabilitados)
 
 router.get("/:id", obtenerProductoPorId)
 
