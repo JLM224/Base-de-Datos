@@ -2,9 +2,14 @@ const carritoServicios = require("../servicios/carrito.servicios")
 
 const crearCarrito = async (req, res) => {
   try {
-    const carrito = await carritoServicios.crearCarrito(req.body.idUsuario)
+    const idUsuario = req.user.idUsuario
 
-    res.status(201).json(carrito)
+    const carrito = await carritoServicios.crearCarritoServicio(idUsuario)
+
+    res.status(201).json({
+      mensaje: "Carrito creado correctamente",
+      carrito
+    })
 
   } catch (error) {
     res.status(400).json({
@@ -16,9 +21,14 @@ const crearCarrito = async (req, res) => {
 
 const obtenerCarritoPorUsuario = async (req, res) => {
   try {
-    const carrito = await carritoServicios.obtenerCarritoPorUsuario(req.params.idUsuario)
+    const idUsuario = req.user.idUsuario
 
-    res.json(carrito)
+    const carrito = await carritoServicios.obtenerCarritoPorUsuarioServicio(idUsuario)
+
+    res.status(200).json({
+      mensaje: "Carrito obtenido correctamente",
+      carrito
+    })
 
   } catch (error) {
     res.status(404).json({
@@ -30,15 +40,20 @@ const obtenerCarritoPorUsuario = async (req, res) => {
 
 const agregarProducto = async (req, res) => {
   try {
-    const { idUsuario, idProducto, cantidad } = req.body
+    const idUsuario = req.user.idUsuario
 
-    const carrito = await carritoServicios.agregarProducto(
+    const { idProducto, cantidad } = req.body
+
+    const carrito = await carritoServicios.agregarProductoServicio(
       idUsuario,
       idProducto,
       cantidad
     )
 
-    res.json(carrito)
+    res.status(200).json({
+      mensaje: "Producto agregado al carrito",
+      carrito
+    })
 
   } catch (error) {
     res.status(400).json({
@@ -50,14 +65,19 @@ const agregarProducto = async (req, res) => {
 
 const quitarProducto = async (req, res) => {
   try {
-    const { idUsuario, idProducto } = req.body
+    const idUsuario = req.user.idUsuario
 
-    const carrito = await carritoServicios.quitarProducto(
+    const { idProducto } = req.body
+
+    const carrito = await carritoServicios.quitarProductoServicio(
       idUsuario,
       idProducto
     )
 
-    res.json(carrito)
+    res.status(200).json({
+      mensaje: "Producto eliminado del carrito",
+      carrito
+    })
 
   } catch (error) {
     res.status(400).json({
@@ -69,15 +89,20 @@ const quitarProducto = async (req, res) => {
 
 const actualizarCantidad = async (req, res) => {
   try {
-    const { idUsuario, idProducto, cantidad } = req.body
+    const idUsuario = req.user.idUsuario
 
-    const carrito = await carritoServicios.actualizarCantidad(
+    const { idProducto, cantidad } = req.body
+
+    const carrito = await carritoServicios.actualizarCantidadServicio(
       idUsuario,
       idProducto,
       cantidad
     )
 
-    res.json(carrito)
+    res.status(200).json({
+      mensaje: "Cantidad actualizada correctamente",
+      carrito
+    })
 
   } catch (error) {
     res.status(400).json({
@@ -89,9 +114,14 @@ const actualizarCantidad = async (req, res) => {
 
 const vaciarCarrito = async (req, res) => {
   try {
-    const carrito = await carritoServicios.vaciarCarrito(req.body.idUsuario)
+    const idUsuario = req.user.idUsuario
 
-    res.json(carrito)
+    const carrito = await carritoServicios.vaciarCarritoServicio(idUsuario)
+
+    res.status(200).json({
+      mensaje: "Carrito vaciado correctamente",
+      carrito
+    })
 
   } catch (error) {
     res.status(400).json({

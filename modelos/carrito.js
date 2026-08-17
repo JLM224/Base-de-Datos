@@ -11,7 +11,7 @@ const EsquemaCarrito = new Schema({
     {
       idProducto: {
         type: Schema.Types.ObjectId,
-        ref: "Producto",
+        ref: "productos",
         required: true
       },
       cantidad: {

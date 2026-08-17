@@ -1,7 +1,7 @@
 const Carrito = require("../modelos/carrito")
 const Producto = require("../modelos/productos")
 
-const crearCarrito = async (idUsuario) => {
+const crearCarritoServicio = async (idUsuario) => {
   try {
     const carritoExistente = await Carrito.findOne({ idUsuario })
 
@@ -21,7 +21,7 @@ const crearCarrito = async (idUsuario) => {
   }
 }
 
-const obtenerCarritoPorUsuario = async (idUsuario) => {
+const obtenerCarritoPorUsuarioServicio = async (idUsuario) => {
   try {
     const carrito = await Carrito.findOne({ idUsuario })
       .populate("productos.idProducto")
@@ -37,18 +37,26 @@ const obtenerCarritoPorUsuario = async (idUsuario) => {
   }
 }
 
-const agregarProducto = async (idUsuario, idProducto, cantidad = 1) => {
+const agregarProductoServicio = async (idUsuario, idProducto, cantidad = 1) => {
   try {
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+      throw new Error("La cantidad debe ser un número entero mayor a 0")
+    }
+
     const carrito = await Carrito.findOne({ idUsuario })
 
     if (!carrito) {
       throw new Error("Carrito no encontrado")
     }
 
-    const productoExiste = await Producto.findById(idProducto)
+    const producto = await Producto.findById(idProducto)
 
-    if (!productoExiste) {
+    if (!producto) {
       throw new Error("Producto no existe")
+    }
+
+    if (!producto.habilitado) {
+      throw new Error("El producto no está disponible")
     }
 
     const productoEnCarrito = carrito.productos.find(
@@ -56,8 +64,25 @@ const agregarProducto = async (idUsuario, idProducto, cantidad = 1) => {
     )
 
     if (productoEnCarrito) {
-      productoEnCarrito.cantidad += cantidad
+
+      const nuevaCantidad = productoEnCarrito.cantidad + cantidad
+
+      if (nuevaCantidad > producto.stock) {
+        throw new Error(
+          `No hay suficiente stock. Stock disponible: ${producto.stock}`
+        )
+      }
+
+      productoEnCarrito.cantidad = nuevaCantidad
+
     } else {
+
+      if (cantidad > producto.stock) {
+        throw new Error(
+          `No hay suficiente stock. Stock disponible: ${producto.stock}`
+        )
+      }
+
       carrito.productos.push({
         idProducto,
         cantidad
@@ -71,12 +96,21 @@ const agregarProducto = async (idUsuario, idProducto, cantidad = 1) => {
   }
 }
 
-const quitarProducto = async (idUsuario, idProducto) => {
+const quitarProductoServicio = async (idUsuario, idProducto) => {
   try {
+
     const carrito = await Carrito.findOne({ idUsuario })
 
     if (!carrito) {
       throw new Error("Carrito no encontrado")
+    }
+
+    const productoExiste = carrito.productos.some(
+      (p) => p.idProducto.toString() === idProducto
+    )
+
+    if (!productoExiste) {
+      throw new Error("El producto no está en el carrito")
     }
 
     carrito.productos = carrito.productos.filter(
@@ -90,23 +124,43 @@ const quitarProducto = async (idUsuario, idProducto) => {
   }
 }
 
-const actualizarCantidad = async (idUsuario, idProducto, cantidad) => {
+const actualizarCantidadServicio = async (idUsuario, idProducto, cantidad) => {
   try {
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+      throw new Error("La cantidad debe ser un número entero mayor a 0")
+    }
+
     const carrito = await Carrito.findOne({ idUsuario })
 
     if (!carrito) {
       throw new Error("Carrito no encontrado")
     }
 
-    const producto = carrito.productos.find(
+    const productoEnCarrito = carrito.productos.find(
       (p) => p.idProducto.toString() === idProducto
     )
 
-    if (!producto) {
-      throw new Error("Producto no está en el carrito")
+    if (!productoEnCarrito) {
+      throw new Error("El producto no está en el carrito")
     }
 
-    producto.cantidad = cantidad
+    const producto = await Producto.findById(idProducto)
+
+    if (!producto) {
+      throw new Error("Producto no existe")
+    }
+
+    if (!producto.habilitado) {
+      throw new Error("El producto no está disponible")
+    }
+
+    if (cantidad > producto.stock) {
+      throw new Error(
+        `No hay suficiente stock. Stock disponible: ${producto.stock}`
+      )
+    }
+
+    productoEnCarrito.cantidad = cantidad
 
     return await carrito.save()
 
@@ -115,8 +169,9 @@ const actualizarCantidad = async (idUsuario, idProducto, cantidad) => {
   }
 }
 
-const vaciarCarrito = async (idUsuario) => {
+const vaciarCarritoServicio = async (idUsuario) => {
   try {
+
     const carrito = await Carrito.findOne({ idUsuario })
 
     if (!carrito) {
@@ -132,11 +187,12 @@ const vaciarCarrito = async (idUsuario) => {
   }
 }
 
+
 module.exports = {
-  crearCarrito,
-  obtenerCarritoPorUsuario,
-  agregarProducto,
-  quitarProducto,
-  actualizarCantidad,
-  vaciarCarrito
+  crearCarritoServicio,
+  obtenerCarritoPorUsuarioServicio,
+  agregarProductoServicio,
+  quitarProductoServicio,
+  actualizarCantidadServicio,
+  vaciarCarritoServicio
 }

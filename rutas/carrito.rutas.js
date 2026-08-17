@@ -2,17 +2,18 @@ const express = require("express")
 const router = express.Router()
 
 const carritoControlador = require("../controladores/carrito.controladores")
+const auth = require("../middlewares/auth")
 
-router.post("/", carritoControlador.crearCarrito)
+router.post("/", auth("usuario"), carritoControlador.crearCarrito)
 
-router.get("/:idUsuario", carritoControlador.obtenerCarritoPorUsuario)
+router.get("/", auth("usuario"), carritoControlador.obtenerCarritoPorUsuario)
 
-router.post("/agregar", carritoControlador.agregarProducto)
+router.post("/agregar", auth("usuario"), carritoControlador.agregarProducto)
 
-router.post("/quitar", carritoControlador.quitarProducto)
+router.delete("/quitar", auth("usuario"), carritoControlador.quitarProducto)
 
-router.put("/cantidad", carritoControlador.actualizarCantidad)
+router.put("/cantidad", auth("usuario"), carritoControlador.actualizarCantidad)
 
-router.delete("/vaciar", carritoControlador.vaciarCarrito)
+router.delete("/vaciar", auth("usuario"), carritoControlador.vaciarCarrito)
 
 module.exports = router
