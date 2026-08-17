@@ -1,5 +1,6 @@
 const {
   obtenerTodosLosProductosServicio,
+  obtenerProductosHabilitadosServicio,
   obtenerProductoPorIdServicio,
   crearNuevoProductoServicio,
   actualizarProductoPorIdServicio,
@@ -16,6 +17,17 @@ const obtenerTodosLosProductos = async (req, res) => {
       ? { msg, error }
       : { productos }
   )
+}
+
+const obtenerProductosHabilitados = async (req, res) => {
+  const {productos, msg, error, statusCode} = 
+    await obtenerProductosHabilitadosServicio()
+
+    res.status(statusCode).json(
+      error
+        ? { msg, error }
+        : {productos}
+    )
 }
 
 const obtenerProductoPorId = async (req, res) => {
@@ -70,7 +82,7 @@ const eliminarProductoPorId = async (req, res) => {
 
 const cambiarEstadoProducto = async (req, res) => {
   const { msg, error, statusCode } =
-    await cambiarEstadoProductoServicio(req.params.idProducto)
+    await cambiarEstadoProductoServicio(req.params.id)
 
   res.status(statusCode).json(
     error
@@ -81,6 +93,7 @@ const cambiarEstadoProducto = async (req, res) => {
 
 module.exports = {
   obtenerTodosLosProductos,
+  obtenerProductosHabilitados,
   obtenerProductoPorId,
   crearNuevoProducto,
   actualizarProductoPorId,

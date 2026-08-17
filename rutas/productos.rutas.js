@@ -3,6 +3,7 @@ const multerMiddleware = require("../middlewares/multer.middleware")
 const auth = require("../middlewares/auth")
 const {
   obtenerTodosLosProductos,
+  obtenerProductosHabilitados,
   obtenerProductoPorId,
   crearNuevoProducto,
   actualizarProductoPorId,
@@ -14,13 +15,15 @@ const router = express.Router()
 
 router.get("/", obtenerTodosLosProductos)
 
+router.get("/habilitados", obtenerProductosHabilitados)
+
 router.get("/:id", obtenerProductoPorId)
 
 router.post("/", auth("admin"), multerMiddleware.single("imagen"), crearNuevoProducto)
 
 router.put("/:id", auth("admin"), multerMiddleware.single("imagen"), actualizarProductoPorId)
 
-router.patch("/cambiarEstado/:idProducto", auth("admin"), cambiarEstadoProducto)
+router.put("/cambiarEstado/:id", auth("admin"), cambiarEstadoProducto)
 
 router.delete("/:id", auth("admin"), eliminarProductoPorId)
 
